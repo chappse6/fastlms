@@ -1,5 +1,7 @@
 package com.zerobase.fastlms.components;
 
+import com.zerobase.fastlms.mail.entity.MailTemplate;
+import com.zerobase.fastlms.mail.repository.MailTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,12 +10,14 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
 public class MailComponents {
     
     private final JavaMailSender javaMailSender;
+    private final MailTemplateRepository mailTemplateRepository;
     
     public void sendMailTest() {
     
@@ -25,8 +29,15 @@ public class MailComponents {
         javaMailSender.send(msg);
     }
     
-    public boolean sendMail(String mail, String subject, String text) {
-        
+    public boolean sendMail(String mailTemplateId, String mail, String userName, String uuid) {
+
+        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findByMailTemplateId(mailTemplateId);
+        if (!optionalMailTemplate.isPresent()) {
+            return false;
+        }
+
+        MailTemplate mailTemplate = optionalMailTemplate.get();
+
         boolean result = false;
         
         MimeMessagePreparator msg = new MimeMessagePreparator() {
@@ -34,8 +45,8 @@ public class MailComponents {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                 mimeMessageHelper.setTo(mail);
-                mimeMessageHelper.setSubject(subject);
-                mimeMessageHelper.setText(text, true);
+                mimeMessageHelper.setSubject(mailTemplate.getSubject());
+                mimeMessageHelper.setText(mailTemplate.textAdd(userName, uuid), true);
             }
         };
         

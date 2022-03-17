@@ -4,6 +4,7 @@ import com.zerobase.fastlms.admin.dto.MemberDto;
 import com.zerobase.fastlms.admin.mapper.MemberMapper;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.components.MailComponents;
+import com.zerobase.fastlms.mail.entity.MailTemplateType;
 import com.zerobase.fastlms.member.entity.Member;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.exception.MemberStopUserException;
@@ -62,12 +63,9 @@ public class MemberServiceImpl implements MemberService {
                 .userStatus(Member.MEMBER_STATUS_REQ)
                 .build();
         memberRepository.save(member);
-        
-        String email = parameter.getUserId();
-        String subject = "fastlms 사이트 가입을 축하드립니다. ";
-        String text = "<p>fastlms 사이트 가입을 축하드립니다.<p><p>아래 링크를 클릭하셔서 가입을 완료 하세요.</p>"
-                + "<div><a target='_blank' href='http://localhost:8080/member/email-auth?id=" + uuid + "'> 가입 완료 </a></div>";
-        mailComponents.sendMail(email, subject, text);
+
+        mailComponents.sendMail(MailTemplateType.REGISTER_CHECK, parameter.getUserId(),
+                parameter.getUserName(), uuid);
         
         return true;
     }
@@ -109,13 +107,9 @@ public class MemberServiceImpl implements MemberService {
         member.setResetPasswordKey(uuid);
         member.setResetPasswordLimitDt(LocalDateTime.now().plusDays(1));
         memberRepository.save(member);
-        
-        String email = parameter.getUserId();
-        String subject = "[fastlms] 비밀번호 초기화 메일 입니다. ";
-        String text = "<p>fastlms 비밀번호 초기화 메일 입니다.<p>" +
-                "<p>아래 링크를 클릭하셔서 비밀번호를 초기화 해주세요.</p>"+
-                "<div><a target='_blank' href='http://localhost:8080/member/reset/password?id=" + uuid + "'> 비밀번호 초기화 링크 </a></div>";
-        mailComponents.sendMail(email, subject, text);
+
+        mailComponents.sendMail(MailTemplateType.PASSWORD_RESET, parameter.getUserId(),
+                parameter.getUserName(), uuid);
     
         return false;
     }
