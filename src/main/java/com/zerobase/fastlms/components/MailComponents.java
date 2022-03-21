@@ -31,7 +31,7 @@ public class MailComponents {
     
     public boolean sendMail(String mailTemplateId, String mail, String userName, String uuid) {
 
-        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findByMailTemplateId(mailTemplateId);
+        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findById(mailTemplateId);
         if (!optionalMailTemplate.isPresent()) {
             return false;
         }
@@ -46,7 +46,7 @@ public class MailComponents {
                 MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                 mimeMessageHelper.setTo(mail);
                 mimeMessageHelper.setSubject(mailTemplate.getSubject());
-                mimeMessageHelper.setText(mailTemplate.textAdd(userName, uuid), true);
+                mimeMessageHelper.setText(mailTemplate.textFormat(userName, uuid), true);
             }
         };
         

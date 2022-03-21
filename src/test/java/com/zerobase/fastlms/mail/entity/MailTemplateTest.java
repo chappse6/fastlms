@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+
+
 class MailTemplateTest {
 
     @Test
@@ -25,7 +25,7 @@ class MailTemplateTest {
         String uuid = "test";
 
         //whet
-        String text = mailTemplate.textAdd(userName, uuid);
+        String text = mailTemplate.textFormat(userName, uuid);
 
         //then
         assertThat(text).isEqualTo("<p>test님 fastlms 비밀번호 초기화 메일 입니다.<p>\n" +

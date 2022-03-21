@@ -19,7 +19,7 @@ public class MailTemplate implements MailTemplateType {
     String text;
 
     // 비지니스 로직
-    public String textAdd(String userName, String uuid) {
+    public String textFormat(String userName, String uuid) {
         return String.format(this.text, userName, uuid);
     }
 
