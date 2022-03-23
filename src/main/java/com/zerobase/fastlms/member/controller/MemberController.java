@@ -80,6 +80,5 @@ public class MemberController {
 
         return "member/info";
     }
-    
-    
+
 }

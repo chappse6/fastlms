@@ -25,6 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    // 로그인 실패시 처리 / 빈으로 구현
     @Bean
     UserAuthenticationFailureHandler getFailureHandler() {
         return new UserAuthenticationFailureHandler();
@@ -34,7 +35,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable();
+        http.headers().frameOptions().sameOrigin();
 
+        // 로그인 없이 접근 가능하도록 설정
         http.authorizeRequests()
                 .antMatchers(
                         "/"
@@ -48,6 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**")
                 .hasAuthority("ROLE_ADMIN");
 
+        // 로그인 처리
         http.formLogin()
                 .loginPage("/member/login")
                 .failureHandler(getFailureHandler())
