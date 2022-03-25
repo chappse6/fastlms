@@ -1,7 +1,10 @@
 package com.zerobase.fastlms.member.service;
 
 import com.zerobase.fastlms.admin.dto.MemberDto;
+import com.zerobase.fastlms.admin.dto.MemberHistoryDto;
 import com.zerobase.fastlms.admin.model.MemberParam;
+import com.zerobase.fastlms.member.entity.MemberHistory;
+import com.zerobase.fastlms.member.model.MemberHistroyInput;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,6 +45,15 @@ public interface MemberService extends UserDetailsService {
      * 회원 비밀번호 초기화
      */
     boolean updatePassword(String userId, String password);
-    
-    
+
+    /**
+     * 로그인 히스토리
+     */
+    void memberHistorySave(MemberHistroyInput memberHistroyInput);
+
+    /**
+     * 로그인 히스토리 조회
+     */
+    List<MemberHistoryDto> memberHistoryList(MemberParam parameter);
+
 }

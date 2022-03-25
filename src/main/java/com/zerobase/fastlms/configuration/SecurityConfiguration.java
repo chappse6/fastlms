@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -19,6 +20,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final MemberService memberService;
+
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Bean
     PasswordEncoder getPasswordEncoder() {
@@ -30,6 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     UserAuthenticationFailureHandler getFailureHandler() {
         return new UserAuthenticationFailureHandler();
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -54,6 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // 로그인 처리
         http.formLogin()
                 .loginPage("/member/login")
+                .successHandler(authenticationSuccessHandler)
                 .failureHandler(getFailureHandler())
                 .permitAll();
 

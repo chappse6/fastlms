@@ -1,15 +1,19 @@
 package com.zerobase.fastlms.member.service.impl;
 
 import com.zerobase.fastlms.admin.dto.MemberDto;
+import com.zerobase.fastlms.admin.dto.MemberHistoryDto;
 import com.zerobase.fastlms.admin.mapper.MemberMapper;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.components.MailComponents;
 import com.zerobase.fastlms.mail.entity.MailTemplateType;
 import com.zerobase.fastlms.member.entity.Member;
+import com.zerobase.fastlms.member.entity.MemberHistory;
 import com.zerobase.fastlms.member.exception.MemberNotEmailAuthException;
 import com.zerobase.fastlms.member.exception.MemberStopUserException;
+import com.zerobase.fastlms.member.model.MemberHistroyInput;
 import com.zerobase.fastlms.member.model.MemberInput;
 import com.zerobase.fastlms.member.model.ResetPasswordInput;
+import com.zerobase.fastlms.member.repository.MemberHistoryRepository;
 import com.zerobase.fastlms.member.repository.MemberRepository;
 import com.zerobase.fastlms.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
@@ -36,6 +41,8 @@ public class MemberServiceImpl implements MemberService {
     private final MailComponents mailComponents;
     
     private final MemberMapper memberMapper;
+
+    private final MemberHistoryRepository memberHistoryRepository;
     
     /**
      * 회원 가입
@@ -118,7 +125,7 @@ public class MemberServiceImpl implements MemberService {
     public List<MemberDto> list(MemberParam parameter) {
         
         long totalCount = memberMapper.selectListCount(parameter);
-        
+
         List<MemberDto> list = memberMapper.selectList(parameter);
         if (!CollectionUtils.isEmpty(list)) {
             int i = 0;
@@ -207,6 +214,35 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return new User(member.getUserId(), member.getPassword(), grantedAuthorities);
+    }
+
+    @Transactional
+    @Override
+    public void memberHistorySave(MemberHistroyInput memberHistroyInput) {
+        Member member = memberRepository.findById(memberHistroyInput.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("회원 정보가 존재하지 않습니다."));
+
+        MemberHistory memberHistory = MemberHistory.createMemberHistory(member, memberHistroyInput);
+
+        memberHistoryRepository.save(memberHistory);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MemberHistoryDto> memberHistoryList(MemberParam parameter) {
+
+        long totalCount = memberHistoryRepository.countByMember_UserId(parameter.getUserId());
+        List<MemberHistoryDto> memberHistoryDtoList = memberHistoryRepository.findAllByMember_UserId(parameter.getUserId());
+        if (!CollectionUtils.isEmpty(memberHistoryDtoList)) {
+            int i = 0;
+            for(MemberHistoryDto x : memberHistoryDtoList) {
+                x.setTotalCount(totalCount);
+                x.setSeq(totalCount - parameter.getPageStart() - i);
+                i++;
+            }
+        }
+
+        return memberHistoryDtoList;
     }
 }
 

@@ -100,6 +100,32 @@
 
         </div>
 
+        <table>
+            <thead>
+            <tr>
+                <th>NO</th>
+                <th>
+                    로그인 일자
+                </th>
+                <th>
+                    접속 IP
+                </th>
+                <th>
+                    접속 UserAgent
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="x : ${list}">
+                <td th:text="${x.seq}">1</td>
+                <td>
+                    <p th:text="${x.loginDt}">2021.01.01</p>
+                </td>
+                <td th:text="${x.clientIp}">111.111.111.11</td>
+                <td th:text="${x.userAgent}">MacOs</td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
 
