@@ -18,18 +18,16 @@ public class MemberHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private Member member;
+    private String userId;
 
     private LocalDateTime loginDt;
     private String clientIp;
     private String userAgent;
 
     //== 생성 메서드 ==//
-    public static MemberHistory createMemberHistory(Member member, MemberHistroyInput memberHistroyInput) {
+    public static MemberHistory createMemberHistory(MemberHistroyInput memberHistroyInput) {
         MemberHistory memberHistory = new MemberHistory();
-        memberHistory.setMember(member);
+        memberHistory.setUserId(memberHistroyInput.getUserId());
         memberHistory.setLoginDt(memberHistroyInput.getLoginDt());
         memberHistory.setClientIp(memberHistroyInput.getClientIp());
         memberHistory.setUserAgent(memberHistroyInput.getUserAgent());

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberHistoryRepository extends JpaRepository<MemberHistory, String> {
-    long countByMember_UserId(String userId);
-    List<MemberHistoryDto> findAllByMember_UserId(String userId);
+    long countByUserId(String userId);
+    List<MemberHistoryDto> findAllByUserId(String userId);
 
 }

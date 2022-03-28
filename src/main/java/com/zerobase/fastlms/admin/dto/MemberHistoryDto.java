@@ -17,7 +17,7 @@ public class MemberHistoryDto {
 
     Long id;
 
-    Member member;
+    String userId;
     LocalDateTime loginDt;
     String clientIp;
     String userAgent;
@@ -30,7 +30,7 @@ public class MemberHistoryDto {
 
         return  MemberHistoryDto.builder()
                 .id(memberHistory.getId())
-                .member(memberHistory.getMember())
+                .userId(memberHistory.getUserId())
                 .loginDt(memberHistory.getLoginDt())
                 .clientIp(memberHistory.getClientIp())
                 .userAgent(memberHistory.getUserAgent())

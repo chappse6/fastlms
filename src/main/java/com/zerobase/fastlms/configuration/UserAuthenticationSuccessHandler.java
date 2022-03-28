@@ -1,6 +1,7 @@
 package com.zerobase.fastlms.configuration;
 
 import com.zerobase.fastlms.member.model.MemberHistroyInput;
+import com.zerobase.fastlms.member.service.MemberHistoryService;
 import com.zerobase.fastlms.member.service.MemberService;
 import com.zerobase.fastlms.util.RequestUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final MemberService memberService;
+    private final MemberHistoryService memberHistoryService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response
@@ -31,7 +32,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         MemberHistroyInput memberHistroyInput = MemberHistroyInput
                 .createMemberHistroyInput(userId, clinetIp, userAgent);
 
-        memberService.memberHistorySave(memberHistroyInput);
+        memberHistoryService.memberHistorySave(memberHistroyInput);
 
         response.sendRedirect("/");
     }

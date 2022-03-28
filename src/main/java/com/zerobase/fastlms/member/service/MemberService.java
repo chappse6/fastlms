@@ -46,14 +46,5 @@ public interface MemberService extends UserDetailsService {
      */
     boolean updatePassword(String userId, String password);
 
-    /**
-     * 로그인 히스토리
-     */
-    void memberHistorySave(MemberHistroyInput memberHistroyInput);
-
-    /**
-     * 로그인 히스토리 조회
-     */
-    List<MemberHistoryDto> memberHistoryList(MemberParam parameter);
 
 }

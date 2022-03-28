@@ -42,7 +42,6 @@ public class MemberServiceImpl implements MemberService {
     
     private final MemberMapper memberMapper;
 
-    private final MemberHistoryRepository memberHistoryRepository;
     
     /**
      * 회원 가입
@@ -216,34 +215,6 @@ public class MemberServiceImpl implements MemberService {
         return new User(member.getUserId(), member.getPassword(), grantedAuthorities);
     }
 
-    @Transactional
-    @Override
-    public void memberHistorySave(MemberHistroyInput memberHistroyInput) {
-        Member member = memberRepository.findById(memberHistroyInput.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException("회원 정보가 존재하지 않습니다."));
-
-        MemberHistory memberHistory = MemberHistory.createMemberHistory(member, memberHistroyInput);
-
-        memberHistoryRepository.save(memberHistory);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<MemberHistoryDto> memberHistoryList(MemberParam parameter) {
-
-        long totalCount = memberHistoryRepository.countByMember_UserId(parameter.getUserId());
-        List<MemberHistoryDto> memberHistoryDtoList = memberHistoryRepository.findAllByMember_UserId(parameter.getUserId());
-        if (!CollectionUtils.isEmpty(memberHistoryDtoList)) {
-            int i = 0;
-            for(MemberHistoryDto x : memberHistoryDtoList) {
-                x.setTotalCount(totalCount);
-                x.setSeq(totalCount - parameter.getPageStart() - i);
-                i++;
-            }
-        }
-
-        return memberHistoryDtoList;
-    }
 }
 
 

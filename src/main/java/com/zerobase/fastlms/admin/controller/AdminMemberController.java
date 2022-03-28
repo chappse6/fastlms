@@ -6,6 +6,7 @@ import com.zerobase.fastlms.admin.dto.MemberHistoryDto;
 import com.zerobase.fastlms.admin.model.MemberInput;
 import com.zerobase.fastlms.admin.model.MemberParam;
 import com.zerobase.fastlms.course.controller.BaseController;
+import com.zerobase.fastlms.member.service.MemberHistoryService;
 import com.zerobase.fastlms.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ import java.util.List;
 public class AdminMemberController extends BaseController {
     
     private final MemberService memberService;
+    private final MemberHistoryService memberHistoryService;
+
     
     @GetMapping("/admin/member/list.do")
     public String list(Model model, MemberParam parameter) {
@@ -49,7 +52,7 @@ public class AdminMemberController extends BaseController {
         MemberDto member = memberService.detail(parameter.getUserId());
         model.addAttribute("member", member);
 
-        List<MemberHistoryDto> memberHistoryDtoList = memberService.memberHistoryList(parameter);
+        List<MemberHistoryDto> memberHistoryDtoList = memberHistoryService.memberHistoryList(parameter);
 
         model.addAttribute("list", memberHistoryDtoList);
        

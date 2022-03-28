@@ -35,6 +35,4 @@ public class Member implements MemberCode {
     
     private String userStatus;//이용가능한상태, 정지상태
 
-    @OneToMany(mappedBy = "member")
-    private List<MemberHistory> memberHistories = new ArrayList<>();
 }
