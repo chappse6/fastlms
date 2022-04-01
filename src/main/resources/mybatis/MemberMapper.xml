@@ -8,22 +8,22 @@
         <if test="searchType != null and searchValue != null">
             <choose>
                 <when test="searchType == 'userId'">
-                    and member.user_id like concat('%', #{searchValue}, '%')
+                    and user_id like concat('%', #{searchValue}, '%')
                 </when>
                 <when test="searchType == 'userName'">
-                    and member.user_name like concat('%', #{searchValue}, '%')
+                    and user_name like concat('%', #{searchValue}, '%')
                 </when>
                 <when test="searchType == 'phone'">
-                    and member.phone like concat('%', #{searchValue}, '%')
+                    and phone like concat('%', #{searchValue}, '%')
                 </when>
                 <otherwise>
                     and
                     (
-                    member.user_id like concat('%', #{searchValue}, '%')
+                    user_id like concat('%', #{searchValue}, '%')
                     or
-                    member.user_name like concat('%', #{searchValue}, '%')
+                    user_name like concat('%', #{searchValue}, '%')
                     or
-                    member.phone like concat('%', #{searchValue}, '%')
+                    phone like concat('%', #{searchValue}, '%')
                     )
                 </otherwise>
             </choose>
@@ -39,14 +39,10 @@
     </select>
 
     <select id="selectList" resultType="com.zerobase.fastlms.admin.dto.MemberDto">
-        select member.*,mh.login_dt
+        select *
         from member
-        left join (select user_id, max(login_dt) login_dt
-        from member_history
-        group by user_id) mh
-        on member.user_id = mh.user_id
         where 1 = 1
-        <include refid="selectListWhere"/>
+            <include refid="selectListWhere"/>
 
         limit #{pageStart}, #{pageEnd}
     </select>
